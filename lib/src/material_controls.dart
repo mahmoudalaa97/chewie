@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class MaterialControls extends StatefulWidget {
-  const MaterialControls({Key key}) : super(key: key);
+  final Color colorBackground;
+  final Color timerColorText;
+  const MaterialControls({Key key,this.colorBackground=Colors.white,this.timerColorText=Colors.white}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -38,16 +40,16 @@ class _MaterialControlsState extends State<MaterialControls> with SingleTickerPr
     if (_latestValue.hasError) {
       return chewieController.errorBuilder != null
           ? chewieController.errorBuilder(
-              context,
-              chewieController.videoPlayerController.value.errorDescription,
-            )
+        context,
+        chewieController.videoPlayerController.value.errorDescription,
+      )
           : const Center(
-              child: Icon(
-                Icons.error,
-                color: Colors.white,
-                size: 42,
-              ),
-            );
+        child: Icon(
+          Icons.error,
+          color: Colors.white,
+          size: 42,
+        ),
+      );
     }
 
     return MouseRegion(
@@ -111,8 +113,8 @@ class _MaterialControlsState extends State<MaterialControls> with SingleTickerPr
   }
 
   AnimatedOpacity _buildBottomBar(
-    BuildContext context,
-  ) {
+      BuildContext context,
+      ) {
     final iconColor = Theme.of(context).textTheme.button.color;
 
     return AnimatedOpacity(
@@ -120,12 +122,12 @@ class _MaterialControlsState extends State<MaterialControls> with SingleTickerPr
       duration: const Duration(milliseconds: 300),
       child: Container(
         height: barHeight,
-        color: Theme.of(context).dialogBackgroundColor,
+        color: widget.colorBackground,
         child: Row(
           children: <Widget>[
             _buildPlayPause(controller),
-            if (chewieController.isLive) const Expanded(child: Text('LIVE')) else _buildPosition(iconColor),
             if (chewieController.isLive) const SizedBox() else _buildProgressBar(),
+            if (chewieController.isLive) const Expanded(child: Text('LIVE')) else _buildPosition(iconColor),
             if (chewieController.allowPlaybackSpeedChanging) _buildSpeedButton(controller),
             if (chewieController.allowMuting) _buildMuteButton(controller),
             if (chewieController.allowFullScreen) _buildExpandButton(),
@@ -198,10 +200,10 @@ class _MaterialControlsState extends State<MaterialControls> with SingleTickerPr
                         icon: isFinished
                             ? const Icon(Icons.replay, size: 32.0)
                             : AnimatedIcon(
-                                icon: AnimatedIcons.play_pause,
-                                progress: playPauseIconAnimationController,
-                                size: 32.0,
-                              ),
+                          icon: AnimatedIcons.play_pause,
+                          progress: playPauseIconAnimationController,
+                          size: 32.0,
+                        ),
                         onPressed: () {
                           _playPause();
                         }),
@@ -216,8 +218,8 @@ class _MaterialControlsState extends State<MaterialControls> with SingleTickerPr
   }
 
   Widget _buildSpeedButton(
-    VideoPlayerController controller,
-  ) {
+      VideoPlayerController controller,
+      ) {
     return GestureDetector(
       onTap: () async {
         _hideTimer?.cancel();
@@ -258,8 +260,8 @@ class _MaterialControlsState extends State<MaterialControls> with SingleTickerPr
   }
 
   GestureDetector _buildMuteButton(
-    VideoPlayerController controller,
-  ) {
+      VideoPlayerController controller,
+      ) {
     return GestureDetector(
       onTap: () {
         _cancelAndRestartTimer();
@@ -283,6 +285,7 @@ class _MaterialControlsState extends State<MaterialControls> with SingleTickerPr
             ),
             child: Icon(
               (_latestValue != null && _latestValue.volume > 0) ? Icons.volume_up : Icons.volume_off,
+              color: Colors.white,
             ),
           ),
         ),
@@ -303,6 +306,7 @@ class _MaterialControlsState extends State<MaterialControls> with SingleTickerPr
         ),
         child: Icon(
           controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+          color: Colors.white,
         ),
       ),
     );
@@ -316,8 +320,9 @@ class _MaterialControlsState extends State<MaterialControls> with SingleTickerPr
       padding: const EdgeInsets.only(right: 24.0),
       child: Text(
         '${formatDuration(position)} / ${formatDuration(duration)}',
-        style: const TextStyle(
-          fontSize: 14.0,
+        style: TextStyle(
+            fontSize: 14.0,
+            color: widget.timerColorText
         ),
       ),
     );
