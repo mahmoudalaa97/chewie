@@ -82,7 +82,6 @@ class ChewieState extends State<Chewie> {
     _ChewieControllerProvider controllerProvider,
   ) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       body: Container(
         alignment: Alignment.center,
         color: Colors.black,
